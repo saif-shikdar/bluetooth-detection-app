@@ -11,7 +11,7 @@ import SwiftUI
 struct bluetooth_detectionApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DeviceListView(viewModel: DeviceListViewModel())
         }
     }
 }
