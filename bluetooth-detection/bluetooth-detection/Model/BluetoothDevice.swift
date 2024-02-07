@@ -8,7 +8,13 @@
 import Foundation
 import CoreBluetooth
 
+enum BluetoothConnectionStatus {
+    case connected
+    case disconnected
+    case loading
+}
+
 struct BluetoothDevice {
     let peripheral: CBPeripheral
-    var isConnected: Bool
+    var connectionStatus: BluetoothConnectionStatus
 }

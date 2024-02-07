@@ -50,23 +50,13 @@ struct DeviceListView: View {
         HStack {
             Text(device.peripheral.name ?? "Unknown Device")
             Spacer()
-            if device.isConnected {
+            switch device.connectionStatus {
+            case .connected:
                 createConnectionIndicator(color: .green)
-            } else {
-                switch device.peripheral.state {
-                case .disconnected:
-                    createConnectionIndicator(color: .red)
-                case .connecting:
-                    createConnectionIndicator(color: nil)
-                case .connected:
-                    createConnectionIndicator(color: .green)
-                case .disconnecting:
-                    createConnectionIndicator(color: nil)
-                default:
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .frame(width: 10, height: 10)
-                        .padding(.trailing, 5)
-                }
+            case .disconnected:
+                createConnectionIndicator(color: .red)
+            case .loading:
+                createConnectionIndicator(color: nil)
             }
         }
     }

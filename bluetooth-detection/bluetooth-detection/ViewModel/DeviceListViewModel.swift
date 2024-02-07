@@ -30,7 +30,7 @@ class DeviceListViewModel: NSObject, ObservableObject {
     }
     
     func refreshDeviceList() {
-        for device in peripherals where device.isConnected {
+        for device in peripherals where device.connectionStatus == .connected {
             self.centralManager?.cancelPeripheralConnection(device.peripheral)
         }
         startScanning()
@@ -48,6 +48,9 @@ class DeviceListViewModel: NSObject, ObservableObject {
     }
     
     func connectToDevice(peripheral: CBPeripheral) {
+        for idx in 0..<peripherals.count where peripherals[idx].peripheral.identifier == peripheral.identifier {
+            peripherals[idx].connectionStatus = .loading
+        }
         if (peripheral.state == .connected) {
             self.centralManager?.cancelPeripheralConnection(peripheral)
         } else {
@@ -70,13 +73,13 @@ extension DeviceListViewModel: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !peripherals.contains(where: {$0.peripheral.identifier == peripheral.identifier}) {
             self.peripherals.append(BluetoothDevice(peripheral: peripheral,
-                                                    isConnected: peripheral.state == .connected))
+                                                    connectionStatus: peripheral.state == .connected ? .connected : .disconnected))
         }
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         for idx in 0..<peripherals.count where peripherals[idx].peripheral.identifier == peripheral.identifier {
-            peripherals[idx].isConnected = true
+            peripherals[idx].connectionStatus = .connected
         }
     }
     
@@ -84,6 +87,10 @@ extension DeviceListViewModel: CBCentralManagerDelegate {
         if let error = error {
             errorMessage = error.localizedDescription
             showErrorMsg = true
+        }
+        
+        for idx in 0..<peripherals.count where peripherals[idx].peripheral.identifier == peripheral.identifier {
+            peripherals[idx].connectionStatus = .disconnected
         }
     }
     
@@ -94,7 +101,7 @@ extension DeviceListViewModel: CBCentralManagerDelegate {
         }
         
         for idx in 0..<peripherals.count where peripherals[idx].peripheral.identifier == peripheral.identifier {
-            peripherals[idx].isConnected = false
+            peripherals[idx].connectionStatus = .disconnected
         }
     }
 }
