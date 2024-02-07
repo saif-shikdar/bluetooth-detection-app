@@ -9,7 +9,7 @@ import SwiftUI
 import CoreBluetooth
 
 struct DeviceListView: View {
-    @ObservedObject var viewModel: DeviceListViewModel
+    @StateObject var viewModel: DeviceListViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 25) {
