@@ -8,11 +8,18 @@
 import Foundation
 import CoreBluetooth
 
+protocol BluetoothListActions {
+    func refreshDeviceList()
+    func startScanning()
+    func connectToDevice(peripheral: CBPeripheral)
+}
+
+@MainActor
 class DeviceListViewModel: NSObject, ObservableObject {
     @Published var isBluetoothEnabled = false
     @Published var isScanning = false
     @Published var showErrorMsg = false
-    var errorMessage = ""
+    @Published var errorMessage = ""
     
     private var centralManager: CBCentralManager?
     @Published var peripherals: [BluetoothDevice] = []
@@ -21,8 +28,10 @@ class DeviceListViewModel: NSObject, ObservableObject {
         super.init()
         self.centralManager = CBCentralManager(delegate: self, queue: .main)
     }
-    
-    func stopScanning() {
+}
+
+extension DeviceListViewModel: BluetoothListActions {
+    private func stopScanning() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) {
             self.centralManager?.stopScan()
             self.isScanning = false
@@ -86,6 +95,7 @@ extension DeviceListViewModel: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         if let error = error {
             errorMessage = error.localizedDescription
+            print(error.localizedDescription)
             showErrorMsg = true
         }
         
@@ -97,6 +107,7 @@ extension DeviceListViewModel: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         if let error = error {
             errorMessage = error.localizedDescription
+            print(error.localizedDescription)
             showErrorMsg = true
         }
         

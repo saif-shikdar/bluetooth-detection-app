@@ -12,37 +12,44 @@ struct DeviceListView: View {
     @StateObject var viewModel: DeviceListViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 25) {
-            HStack {
-                Text("Bluetooth Enabled: ")
-                Text(viewModel.isBluetoothEnabled ? "ON" : "OFF")
-                    .foregroundStyle(viewModel.isBluetoothEnabled ? .green : .red)
-                    .bold()
-                Spacer()
-                if viewModel.isScanning {
-                    ProgressView()
-                } else {
-                    Button("Refresh", systemImage: "arrow.triangle.2.circlepath.circle") {
-                        viewModel.refreshDeviceList()
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 15) {
+                createHeaderView()
+                List(viewModel.peripherals, id: \.peripheral.identifier) { device in
+                    Button {
+                        viewModel.connectToDevice(peripheral: device.peripheral)
+                    } label: {
+                        DeviceCardView(device: device)
                     }
                 }
             }
-            Text("Device List")
+            .navigationTitle("Device List")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert(viewModel.errorMessage, 
+                   isPresented: $viewModel.showErrorMsg) {
+                Button("OK", role: .cancel) {}
+            }
+        .padding()
+        }
+    }
+    
+    @ViewBuilder
+    func createHeaderView() -> some View {
+        HStack {
+            Text("Bluetooth Enabled: ")
+            Text(viewModel.isBluetoothEnabled ? "ON" : "OFF")
+                .foregroundStyle(viewModel.isBluetoothEnabled ? .green : .red)
                 .bold()
-            Divider()
-            List(viewModel.peripherals, id: \.peripheral.identifier) { device in
-                Button {
-                    viewModel.connectToDevice(peripheral: device.peripheral)
-                } label: {
-                    DeviceCardView(device: device)
+            Spacer()
+            if viewModel.isScanning {
+                ProgressView()
+            } else {
+                Button("Refresh", systemImage: "arrow.triangle.2.circlepath.circle") {
+                    viewModel.refreshDeviceList()
                 }
             }
-            Spacer()
         }
-        .alert(viewModel.errorMessage, isPresented: $viewModel.showErrorMsg) {
-            Button("OK", role: .cancel) {}
-        }
-        .padding()
+        Divider()
     }
 }
 
