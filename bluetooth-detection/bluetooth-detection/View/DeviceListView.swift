@@ -34,7 +34,7 @@ struct DeviceListView: View {
                 Button {
                     viewModel.connectToDevice(peripheral: device.peripheral)
                 } label: {
-                    createDeviceCardView(device: device)
+                    DeviceCardView(device: device)
                 }
             }
             Spacer()
@@ -43,35 +43,6 @@ struct DeviceListView: View {
             Button("OK", role: .cancel) {}
         }
         .padding()
-    }
-    
-    @ViewBuilder
-    func createDeviceCardView(device: BluetoothDevice) -> some View {
-        HStack {
-            Text(device.peripheral.name ?? "Unknown Device")
-            Spacer()
-            switch device.connectionStatus {
-            case .connected:
-                createConnectionIndicator(color: .green)
-            case .disconnected:
-                createConnectionIndicator(color: .red)
-            case .loading:
-                createConnectionIndicator(color: nil)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func createConnectionIndicator(color: Color?) -> some View {
-        if color == nil {
-            ProgressView()
-                .scaleEffect(0.7)
-        } else {
-            Circle()
-                .fill(color ?? .red)
-                .frame(width: 10, height: 10)
-                .padding(.trailing, 5)
-        }
     }
 }
 
