@@ -13,7 +13,7 @@ This demo demonstrates:
 - It also demonstrates error handling when a device is unable to pair. This shows an error message which can be dismissed.
 - On the top left corner of the screen it displays Bluetooth status. If the user turns off Bluetooth it will update in the app immediately.
 
-![RPReplay_Final1707311805-ezgif com-video-to-gif-converter](https://github.com/saif-shikdar/bluetooth-detection-app/assets/43826661/f4b96e43-f481-4c3a-b332-4270b64a1c95)
+https://github.com/saif-shikdar/bluetooth-detection-app/assets/43826661/65228106-edc9-43ca-9e25-5d9e789f7d8d
 
 ## Architecture
 
