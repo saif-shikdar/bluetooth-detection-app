@@ -19,39 +19,54 @@ struct DeviceListView: View {
                     .foregroundStyle(viewModel.isBluetoothEnabled ? .green : .red)
                     .bold()
                 Spacer()
-                Button("Refresh", systemImage: "arrow.triangle.2.circlepath.circle") {
-                    print("Refreshing device list...")
+                if viewModel.isScanning {
+                    ProgressView()
+                } else {
+                    Button("Refresh", systemImage: "arrow.triangle.2.circlepath.circle") {
+                        viewModel.refreshDeviceList()
+                    }
                 }
             }
             Text("Device List")
                 .bold()
             Divider()
-            List(viewModel.peripherals, id: \.name) { device in
-                createDeviceCardView(name: device.name, 
-                                     connectionState: device.connectionState)
+            List(viewModel.peripherals, id: \.peripheral.identifier) { device in
+                Button {
+                    viewModel.connectToDevice(peripheral: device.peripheral)
+                } label: {
+                    createDeviceCardView(device: device)
+                }
             }
             Spacer()
+        }
+        .alert(viewModel.errorMessage, isPresented: $viewModel.showErrorMsg) {
+            Button("OK", role: .cancel) {}
         }
         .padding()
     }
     
     @ViewBuilder
-    func createDeviceCardView(name: String?, 
-                              connectionState: CBPeripheralState) -> some View {
+    func createDeviceCardView(device: BluetoothDevice) -> some View {
         HStack {
-            Text(name ?? "Unknown Device")
+            Text(device.peripheral.name ?? "Unknown Device")
             Spacer()
-            switch connectionState {
-            case .disconnected:
-                createConnectionIndicator(color: .red)
-            case .connecting:
-                createConnectionIndicator(color: nil)
-            case .connected:
+            if device.isConnected {
                 createConnectionIndicator(color: .green)
-            case .disconnecting:
-                createConnectionIndicator(color: nil)
-            @unknown default:
-                createConnectionIndicator(color: .red)
+            } else {
+                switch device.peripheral.state {
+                case .disconnected:
+                    createConnectionIndicator(color: .red)
+                case .connecting:
+                    createConnectionIndicator(color: nil)
+                case .connected:
+                    createConnectionIndicator(color: .green)
+                case .disconnecting:
+                    createConnectionIndicator(color: nil)
+                default:
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .frame(width: 10, height: 10)
+                        .padding(.trailing, 5)
+                }
             }
         }
     }
