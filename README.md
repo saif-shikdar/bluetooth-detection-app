@@ -1,9 +1,9 @@
 # Bluetooth Device Detection App
- An app that scans for nearby Bluetooth devices and displays them in a list.
+ An app that scans for nearby Bluetooth devices and displays them in a list built using SwiftUI, CoreBluetooth framework, and supports iOS 17.0 onwards.
 
- 3.5 Hrs spent
+ 3.5 hrs spent
 
-## Demo
+## Summary
 
 This demo demonstrates:
 
@@ -25,8 +25,10 @@ https://github.com/saif-shikdar/bluetooth-detection-app/assets/43826661/65228106
 - Created a new object that has an enum that handles connection status. This is because Corebluetooth uses callbacks for didConnect and didDisconnect events. Therefore to allow the view to update in real time this had to be stored in a separate property to adhere to the @Published property wrapper.
 - Created a loading indicator when the user taps on the list item as I found that some devices took some time to connect and the user won't get any feedback. Therefore adding a loading indicator makes the app more responsive.
 
-## Download Instructions
+## Detailed Build & Run Instructions
 
 - The app can be downloaded directly from the GitHub repository and opened with XCode.
 - If the simulator is used the Bluetooth list will appear empty and the simulator doesn't support Bluetooth.
-- A real device cannot be connected via cable and used to open the app. Be aware that signing into your Apple ID will be required and permission will have to be enabled.
+- A real device can be connected via cable and used to open the app. Be aware that signing into your Apple ID will be required and permission will have to be enabled.
+- Change team to personal team in project settings, Signing & Capabilities to run on the device.
+- Need a device, minimum version: iOS 17.0
