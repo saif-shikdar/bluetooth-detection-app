@@ -1,6 +1,8 @@
 # Bluetooth Device Detection App
  An app that scans for nearby Bluetooth devices and displays them in a list.
 
+ 3.5 Hrs spent
+
 ## Demo
 
 This demo demonstrates:
